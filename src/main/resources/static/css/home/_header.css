@@ -1,0 +1,25 @@
+.search-container form {
+    display: flex;
+    align-items: center; /* Căn chỉnh các phần tử theo chiều dọc */
+}
+
+.search-container input {
+    flex: 1; /* Input sẽ mở rộng để chiếm hết không gian còn lại của dòng */
+    height: 30px;
+
+}
+
+.search-container button {
+    color:white;
+    height: 30px;
+    margin-left: 5px; /* Để tạo khoảng cách giữa input và button */
+    margin-right: 200px ;
+}
+.search-container input {
+    flex: 0 1 120px; /* Ô nhập sẽ không nhỏ hơn 150px */
+    width: 150px; /* Chiều rộng cố định */
+    min-width: 100px; /* Điều chỉnh giá trị chiều rộng tối thiểu nếu cần */
+    height: 30px;
+    margin-left: 40px;
+
+}

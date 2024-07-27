@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="nav" class="templatemo-sidebar">
+    <header class="templatemo-site-header">
+
+        <div class="row">
+            <div class="col-sm-6">  <div style="float: left" ;>
+                <div style="text-align: center ; float: left;">
+                    <div
+                            style="display: inline-block; ; text-align: left;">
+                        <div
+                                style="width: 100px; height: 100px; overflow: hidden; margin: 0 auto;">
+                            <a href="/themThongTinTaiKhoan/${sessionScope.matk}">
+                                <img style="width: 80px; height:80px; border-radius: 15px"
+                                     th:src="'/images/user_image/' + ${session.user.image}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div></div>
+        <div class="col-sm-6"><div style="text-align: center;">
+            <span style="color: white;font-size: 18px; padding-bottom: 10px;">[[${session.user.username}]]</span><h6>:</h6> <span style="color: white;" th:each="role : ${session.user.roles}">[[${role.rolename=="ADMIN" ? "ADMIN" :" "}]]</span>
+        </div></div>
+<br>
+        </div>
+</header>
+<!-- Search box -->
+<nav class="templatemo-left-nav">
+    <ul>
+        <li><a href="/Admin/index111" class="active"><i class="fa fa-home fa-fw"></i>Quản Lý</a></li>
+        <li><a href="data-visualization.html"><i class="fa fa-bar-chart fa-fw"></i>Biểu Đồ</a></li>
+        <li><a href="/admin/report/filmByRevenue"><i class="fa fa-database fa-fw"></i>Phim Theo Doanh Thu</a></li>
+        <li><a href="/admin/phim"><i class="fa fa-map-marker fa-fw"></i>Quản Lý Kho Phim</a></li>
+        <li><a href="/admin/users"><i class="fa fa-users fa-fw"></i>Quản Lý Khách Hàng</a></li>
+        <li><a th:href="@{/admin/report/manageTicket}"><i class="fa fa-sliders fa-fw"></i>Quản Lý Hóa Đơn</a></li>
+        <li><a href="/logout"><i class="fa fa-eject fa-fw"></i>Đăng Xuất</a></li>
+    </ul>
+</nav>
+</div>
+</body>
+</html>

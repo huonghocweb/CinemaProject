@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function submitFilm(selectElement) {
+            var maphim = selectElement.value;
+            var form = document.getElementById("filmForm");
+            form.action = "/home/showTimeByIdFilm/" + maphim;
+            form.submit();
+        }
+    </script>
+    <link rel="stylesheet" th:href="@{/css/home/_header.css}">
+</head>
+<body>
+<div th:fragment="header">
+<header class="header" data-header>
+    <div class="container">
+
+        <div class="overlay" data-overlay></div>
+
+        <a th:href="@{/}" class="logo">
+            <img src="/images/logo.svg" alt="Filmlane logo">
+        </a>
+
+        <div class="header-actions">
+
+            <div class="search-container" >
+                <form th:action="@{/home/filmByKeyWord}">
+                    <input type="text" placeholder="Search" name="tenphim">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+
+
+        </div>
+
+        <button class="menu-open-btn" data-menu-open-btn>
+            <ion-icon name="reorder-two"></ion-icon>
+        </button>
+
+        <nav class="navbar" data-navbar>
+
+            <div class="navbar-top">
+
+                <a href="./index.html" class="logo">
+                    <img src="/images/logo.svg" alt="Filmlane logo">
+                </a>
+                <button class="menu-close-btn" data-menu-close-btn>
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+            </div>
+
+            <ul class="navbar-list">
+                <li>
+                    <a th:href="@{/}" class="navbar-link">HOME</a>
+                </li>
+                <li>
+                    <a href="#" class="navbar-link">FILM</a>
+                </li>
+                <li>
+                    <a th:href="@{/admin/index}" class="navbar-link">ADMIN</a>
+                </li>
+                <li>
+                    <div class="lang-wrapper">
+                        <label for="language">
+                            <ion-icon name="globe-outline"></ion-icon>
+                        </label>
+                        <select name="language" id="language">
+                            <option value="?language=en" >EN</option>
+                            <option value="?language=ar" >AR</option>
+                            <option value="?language=tu" >TU</option>
+                            <option value="?language=fr" >FR</option>
+                            <option value="?language=vn" >VN</option>
+                        </select>
+                    </div>
+                </li>
+<!--                Information User Login-->
+
+                <li><div style="position: absolute; top: 30px; right: 150px; transform: translate(50%, 0);"
+                    th:if="${session.user != null}">
+                    <div style="text-align: center;">
+                        <div
+                                style="display: inline-block; position: relative; text-align: left;">
+                            <div    th:if="${session.user.image != null}"
+                                    style="width: 70px; height: 70px; overflow: hidden; margin: 0 auto;">
+                                <a th:href="@{/auth/logout}">
+                                    <img style="width: 80%; height: 50%; border-radius: 10px;"
+                                         th:src="'/images/user_image/' + ${session.user.image}">
+                                </a>
+                            </div>
+                            <div style="text-align: center;">
+                                <a th:href="@{/auth/logout}">
+                                    <span style="color: white;">[[${session.user.username}]]</span>
+                                    <span style="font-size:10px ;color: white;" th:each="role : ${session.user.roles}">[[${role.rolename}]]</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div style="position: absolute; top: 50px; right: 150px; transform: translate(50%, 0);"
+                         th:if="${session.user == null}">
+                        <a th:href="@{/login}" class="btn btn-primary" style="color: white; text-decoration: none; font-size: 8px;">Login</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="lang-wrapper" >
+                        <form id="filmForm" method="GET">
+                            <select class="form-select-lg mb-3" name="maphim" onchange="submitFilm(this)">
+                                <option selected>Choose Film</option>
+                                <option
+                                        th:each="film : ${session.films}"
+                                        th:value="${film.maphim}"
+                                        th:selected="${session.showTimeByIdFilm != null && !#lists.isEmpty(session.showTimeByIdFilm) && session.showTimeByIdFilm.get(0).tenphim == film.tenphim}"
+                                        th:text="${film.tenphim}">
+                                </option>
+                            </select>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <script>
+        document.getElementById('language').addEventListener('change', function() {
+            window.location.href = this.value;
+        });
+    </script>
+</header>
+</div>
+</body>
+</html>

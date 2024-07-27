@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/home/login.css}">
+</head>
+<body>
+    <section>
+        <div class="form-box">
+            <div class="form-value">
+                <form th:action="@{/logon}" method="post">
+                    <h2>Login</h2>
+                    <div class="inputbox">
+                        <label >UserName : </label>
+                        <input name="username" >
+                    </div>
+                    <div class="inputbox">
+                        <label >Password : </label>
+                        <input name="password"  type="password" >
+                    </div>
+                    <button >Log in</button>
+                </form>
+            </div>
+        </div>
+
+    </section>
+    <hr>
+    <a th:href="@{/oauth2/authorization/google}">Google</a>
+    <a th:href="@{/oauth2/authorization/facebook}">FaceBook</a>
+</form>
+</body>
+</html>

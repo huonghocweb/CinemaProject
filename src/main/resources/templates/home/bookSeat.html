@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/home/index.css}">
+
+    <!--
+      - google font link
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Sen:wght@400..800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/home/bookSeat.css}" />
+
+    <script>
+        function submitFilm(selectElement) {
+            var maphim = selectElement.value;
+            var form = document.getElementById("filmForm");
+            form.action = "/home/showTimeByIdFilm/" + maphim;
+            form.submit();
+        }
+        function submitDay(selectElement){
+            var ngaychieu= selectElement.value;
+            var form= document.getElementById("dayForm");
+            form.action="/home/showTimeByIdFilmAndDay/" + ngaychieu;
+            form.submit();
+        }
+        function submitTime(selectElement){
+            var giochieu= selectElement.value;
+            var form= document.getElementById("timeForm");
+            form.action="/home/showTimeResult/"+ giochieu;
+            form.submit();
+        }
+    </script>
+    <style>
+        .seat-link {
+            width: 30px;
+            height: 30px;
+            background-color: #ccc;
+            cursor: pointer;
+            margin:5px 5px;
+            text-decoration: none;
+        }
+
+        .seat-link.selected {
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            cursor: pointer;
+            margin:5px 5px;
+
+        }
+
+        .cinema-seating-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Chiều cao 100% của viewport để căn giữa theo chiều dọc */
+        }
+
+        .cinema-seating {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 0.5px;
+            padding-left: 15px;
+        }
+
+
+        .seat a {
+            text-decoration: none;
+            color: inherit;
+            font-size:12px;
+            text-align:center;
+        }
+        .ticket
+        {
+            color:white ;
+            font-family: Arial, sans-serif;
+            font-size:15px;
+            padding-top:10px
+        }
+        .ticket h5
+        {
+            color: #f60;
+        }
+
+    </style>
+</head>
+<body id="#top">
+
+<!--
+  - #HEADER
+-->
+<div th:replace="~{/fragment/home/_header.html :: header}"></div>
+<main>
+    <article>
+        <!--
+          - #MOVIE DETAIL
+        -->
+        <section class="movie-detail">
+            <div class="container" style="padding:30px">
+                <div class="lang-wrapper" >
+                    <form id="filmForm" action="/home/ticket" method="GET">
+                        <select class="form-select-lg mb-3" name="maphim" onchange="submitFilm()">
+                            <option selected>Choose Film</option>
+                                <option  th:each="film : ${session.films}"
+                                         th:value="${film.maphim}"
+                                         th:selected="${session.showTimeByIdFilm.get(0).getTenphim() == film.tenphim}"
+                                         th:text="${film.tenphim}">
+                                </option>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="lang-wrapper" >
+                    <form id="dayForm"  method="GET">
+                        <select class=" form-select-lg mb-3" name="ngaychieu" onchange="submitDay(this)">
+                            <option selected>Choose show day </option>
+                                <option
+                                        th:each="showTimeByIdFilm : ${session.showTimeByIdFilm}"
+                                        th:value="${showTimeByIdFilm.ngaychieu}"
+                                        th:selected="${session.showTimeByIdFilmAndDay != null && !#lists.isEmpty(session.showTimeByIdFilmAndDay) ? (session.showTimeByIdFilmAndDay.get(0).ngaychieu == showTimeByIdFilm.ngaychieu) : false}"
+                                        th:text="${showTimeByIdFilm.ngaychieu}">
+                                </option>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="lang-wrapper"  th:if="${session.showTimeByIdFilmAndDay != null}">
+                    <form id="timeForm"  method="GET">
+                        <select class=" form-select-lg mb-3" name="giochieu" onchange="submitTime(this)">
+                            <option selected>Choose show time</option>
+                                <option th:each="showTimeByIdFilmAndDay : ${session.showTimeByIdFilmAndDay}"
+                                        th:value="${showTimeByIdFilmAndDay.giochieu}"
+                                        th:selected="${session.showTimeResult != null && !#lists.isEmpty(session.showTimeResult) ? (session.showTimeResult.get(0).giochieu == showTimeByIdFilmAndDay.giochieu) : false}"
+                                        th:text="${showTimeByIdFilmAndDay.giochieu}">
+                                </option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div class="container" th:if="${session.showTimeResult != null}">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <img th:src="${'/images/' +session.filmChoose.hinhanh}" width="220px" height="180px" style="padding-left:10px"/>
+                        <div class="ticket">
+                            <h5 >Tên Phim: [[${session.showTimeResult[0].tenphim}]]   </h5>
+                            <p>Định Dạng :   2D Lồng tiếng</p>
+                            <p> Phòng Chiếu :[[${session.showTimeResult[0].tenphongchieu}]]</p>
+                            <p>Suất:  [[${session.showTimeResult[0].giochieu}]]  -  [[${session.showTimeResult[0].ngaychieu}]]</p>
+                            <p th:if="${session.seatChooses != null}">
+                                Ghe :
+                                <span class="seat-container">
+                                    <span th:each="seatChoose, iterStat : ${session.seatChooses}" >
+                                        [[${seatChoose}]]
+                                        <span th:if="${!iterStat.last}">, </span>
+                                    </span>
+                                </span>
+                            </p>
+                            <h5>Tổng cộng: [[${session.totalPrice }]] ₫</h5>
+                            <button class="btnn">Quay lại</button>
+                            <form th:action="@{/payment}" method="POST">
+                                <button type="submit" class="btnn">Tiếp tục</button>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" >
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="cinema-seating" >
+
+                                            <div th:each="seat,inter : ${session.seatNormal}" class="seat seat-link "
+                                                >
+                                                <a th:href="@{/home/chooseSeat/{maghe}(maghe=${seat.maghe})}">[[${seat.soghe}]]</a>
+                                            </div>
+
+                                            <div th:each="seat,inter : ${session.seatVip}"  class="seat seat-link selected">
+                                                <a th:href="@{/home/chooseSeat/{maghe}(maghe=${seat.maghe})}">[[${seat.soghe}]]</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+</main>
+<!--
+  - #FOOTER
+-->
+
+<footer class="footer">
+
+    <div class="footer-top">
+        <div class="container">
+
+            <div class="footer-brand-wrapper">
+
+                <a href="./index.html" class="logo">
+                    <img src="/images/logo.svg" alt="Filmlane logo">
+                </a>
+
+                <ul class="footer-list">
+
+                    <li>
+                        <a href="./index.html" class="footer-link">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="footer-link">Movie</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="footer-link">TV Show</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="footer-link">Web Series</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="footer-link">Pricing</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="quicklink-wrapper">
+
+                <ul class="quicklink-list">
+
+                    <li>
+                        <a href="#" class="quicklink-link">Faq</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="quicklink-link">Help center</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="quicklink-link">Terms of use</a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="quicklink-link">Privacy</a>
+                    </li>
+
+                </ul>
+
+                <ul class="social-list">
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-facebook"></ion-icon>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-twitter"></ion-icon>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-pinterest"></ion-icon>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="social-link">
+                            <ion-icon name="logo-linkedin"></ion-icon>
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+
+            <p class="copyright">
+                &copy; 2022 <a href="#">codewithsadee</a>. All Rights Reserved
+            </p>
+
+            <img src="/images/footer-bottom-img.png" alt="Online banking companies logo" class="footer-bottom-img">
+
+        </div>
+    </div>
+
+</footer>
+<!--
+  - #GO TO TOP
+-->
+<a href="#top" class="go-top" data-go-top>
+    <ion-icon name="chevron-up"></ion-icon>
+</a>
+<!--
+  - custom js link
+-->
+<script src="/js/index.js"></script>
+<!--
+  - ionicon link
+-->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>

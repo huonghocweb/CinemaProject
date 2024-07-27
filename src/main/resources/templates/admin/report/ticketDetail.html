@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link th:href="@{/css/admin/index.css}" rel="stylesheet">
+</head>
+<body>
+<!-- Left column -->
+<div class="templatemo-flex-row">
+    <div th:replace="~{fragment/admin/_nav.html :: nav}"></div>
+    <!-- Main content -->
+    <div class="templatemo-content col-1 light-gray-bg">
+        <div th:replace="~{fragment/admin/_topnav.html :: topnav}"></div>
+        <div class="mt-5  p-2">
+            <form method="GET" action="/admin/users">
+                <div class="row col-12">
+                    <div class="col-sm-3"></div>
+                    <div class="col-3">
+                        <label >Sắp xếp theo</label>
+                        <select name="sortBy" >
+                            <option value="makh">Mặc Định</option>
+                            <option value="hoten">Họ Tên</option>
+                            <option value="email">Email</option>
+                            <option value="trangthai">Trạng Thái</option>
+                            <option value="ngaysinh">Ngày Sinh</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label >Thứ Tự</label>
+                        <select name="sortDirection" >
+                            <option value="asc">Tăng Dần</option>
+                            <option value="desc">Giảm Dần</option>
+                        </select>
+                        <button class="btn btn-primary">Sắp Xếp</button>
+                    </div>
+
+                    <div class="col-sm-3"></div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="templatemo-content-container">
+            <div class="templatemo-content-widget no-padding">
+                <div class="panel panel-default table-responsive">
+                    <table class="table table-striped table-bordered templatemo-user-table">
+                        <thead>
+                        <tr>
+                            <td>Số Thự Tự</td>
+                            <td>Mã Vé Chi Tiết</td>
+                            <td>Ngày Chiếu </td>
+                            <td>Giờ Chiếu</td>
+                            <td>Phòng Chiếu</td>
+                            <td>Loại Ghế</td>
+                            <td>Tống Số Ghế</td>
+                            <td>Đơn giá</td>
+                            <td>Thành Tiền</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ticketDetail,inter : ${ticketDetailsByTicketId} ">
+                                <td>[[${inter.index +1}]]</td>
+                                <td>[[${ticketDetail.mavechitiet}]]</td>
+                                <td th:text="${#temporals.format(ticketDetail.ngaychieu, 'dd/MM/yyyy')}"></td>
+                                <td>[[${ticketDetail.giochieu}]]</td>
+                                <td>[[${ticketDetail.loaighe == 1 ? 'Ghế Thường' : 'Ghế Vip'}]]</td>
+                                <td>[[${ticketDetail.tenphongchieu}]]</td>
+<!--                                <c:forEach items="${ls_ghe}" var="ghe" varStatus="status">-->
+<!--                                ${ghe.soghe} <c:if test="${!status.last}">, </c:if>-->
+<!--                            </c:forEach>-->
+                                <td>[[${ticketDetail.soluong}]]</td>
+                                <td>[[${ticketDetail.dongia}]] VND</td>
+                                <td>[[${ticketDetail.tongtien}]] VNĐ</td>
+                            </tr>
+                        </tbody>
+                        <a th:href="@{/admin/report/manageTicket}" class="btn btn-primary">Trở Lại</a>
+                    </table>    <br></br>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
